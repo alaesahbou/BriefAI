@@ -1,15 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const geminiApiKey = "AIzaSyCcEfLxskeNUABJC3RnJGWWhkrQ7R80bL0";
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyCcEfLxskeNUABJC3RnJGWWhkrQ7R80bL0'; // Use environment variable or hardcoded key (NOT RECOMMENDED for production)
 
 export const articleApi = createApi({
   reducerPath: 'articleApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta', // Updated base URL
     prepareHeaders: (headers) => {
-      headers.set('Authorization', `Bearer ${geminiApiKey}`);
-      headers.set('Content-Type', 'application/json');
-      return headers;
+      headers.set('Content-Type', 'application/json'); // Content type is essential
+      return headers; // No need to set the key in headers for this API
     },
   }),
   endpoints: (builder) => ({
@@ -17,11 +16,25 @@ export const articleApi = createApi({
       queryFn: async (params, { signal }, extraOptions, fetchWithBQ) => {
         try {
           const result = await fetchWithBQ({
-            url: '/models/gemini-flash:generateContent', // Use gemini-flash
+            url: `/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, // Key as query parameter
             method: 'POST',
             body: {
-              prompt: {
-                text: params.articleUrl,
+              contents: [
+                {
+                  role: "user",
+                  parts: [
+                    {
+                      text: params.articleUrl, // Use articleUrl as input
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                temperature: 1,
+                topK: 40,
+                topP: 0.95,
+                maxOutputTokens: 8192,
+                responseMimeType: "text/plain", // Important: Request plain text
               },
             },
             signal,
@@ -32,7 +45,8 @@ export const articleApi = createApi({
           }
 
           // Adapt the response (CRITICAL STEP)
-          const summary = result.data?.candidates?.[0]?.output; // Safer access with optional chaining
+          const summary = result.data?.candidates?.[0]?.content; // Correct path for Gemini 1.5-flash
+
           return { data: { summary } };
 
         } catch (error) {
