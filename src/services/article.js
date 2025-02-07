@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyCcEfLxskeNUABJC3RnJGWWhkrQ7R80bL0'; // Use environment variable or hardcoded key (NOT RECOMMENDED for production)
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY; // Use environment variable or hardcoded key (NOT RECOMMENDED for production)
 
 export const articleApi = createApi({
   reducerPath: 'articleApi',
