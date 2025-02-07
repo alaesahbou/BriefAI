@@ -5,7 +5,7 @@ const geminiApiKey = "AIzaSyCcEfLxskeNUABJC3RnJGWWhkrQ7R80bL0";
 export const articleApi = createApi({
   reducerPath: 'articleApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.generativeai.google.com/v1beta2',
+    baseUrl: 'https://api.generativeai.google.com/v1beta',
     prepareHeaders: (headers) => {
       headers.set('Authorization', `Bearer ${geminiApiKey}`);
       headers.set('Content-Type', 'application/json');
