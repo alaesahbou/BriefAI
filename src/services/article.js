@@ -5,7 +5,7 @@ const geminiApiKey = "AIzaSyCcEfLxskeNUABJC3RnJGWWhkrQ7R80bL0";
 export const articleApi = createApi({
   reducerPath: 'articleApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.generativeai.google.com/v1beta',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
     prepareHeaders: (headers) => {
       headers.set('Authorization', `Bearer ${geminiApiKey}`);
       headers.set('Content-Type', 'application/json');
@@ -17,7 +17,7 @@ export const articleApi = createApi({
       queryFn: async (params, { signal }, extraOptions, fetchWithBQ) => {
         try {
           const result = await fetchWithBQ({
-            url: '/models/gemini-flash:generateText', // Use gemini-flash
+            url: '/models/gemini-flash:generateContent', // Use gemini-flash
             method: 'POST',
             body: {
               prompt: {
